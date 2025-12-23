@@ -1,6 +1,6 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    fullName VARCHAR(100) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     role VARCHAR(20) CHECK (role IN ('admin', 'customer')) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -9,10 +9,12 @@ CREATE TABLE users (
 
 CREATE TABLE vehicles (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    type VARCHAR(50) NOT NULL,
-    price_per_day INT NOT NULL,
+    vehicle_name VARCHAR(100) NOT NULL,
+    vehicleType VARCHAR(50) NOT NULL,
+    vehicleModel VARCHAR(50) NOT NULL,
+    rental_price_per_day INT NOT NULL,
     is_available BOOLEAN DEFAULT true,
+    registration_number VARCHAR(50) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -36,7 +38,7 @@ CREATE TABLE bookings (
 );
 
 
-INSERT INTO users (name, email, role) VALUES
+INSERT INTO users (fullName, email, role) VALUES
 ('Rifat Islam', 'rifat@gmail.com', 'customer'),
 ('Hasan Ali', 'hasan@gmail.com', 'customer'),
 ('Nusrat Jahan', 'nusrat@gmail.com', 'customer'),
@@ -47,7 +49,7 @@ INSERT INTO users (name, email, role) VALUES
 ('Mim Akter', 'mim@gmail.com', 'customer');
 
 
-INSERT INTO vehicles (name, type, price_per_day, is_available) VALUES
+INSERT INTO vehicles (vehicle_name, vehicleType, rental_price_per_day, is_available) VALUES
 ('Toyota Corolla', 'Car', 3000, true),
 ('Honda Civic', 'Car', 3500, true),
 ('Yamaha R15', 'Bike', 1200, true),
@@ -77,8 +79,8 @@ VALUES
 -- Queyry-1
 
 SELECT 
-    u.name AS customer_name,
-    v.name AS vehicle_name,
+    u.fullName AS customer_name,
+    v.vehicle_name AS vehicle_name,
     b.start_date,
     b.end_date,
     b.status
@@ -110,11 +112,11 @@ AND is_available = true;
 -- Query-4
 
 SELECT 
-    v.name AS vehicle_name,
+    v.vehicle_name AS vehicle_name,
     COUNT(b.id) AS total_bookings
 FROM bookings b
 JOIN vehicles v ON b.vehicle_id = v.id
-GROUP BY v.name
+GROUP BY v.vehicle_name
 HAVING COUNT(b.id) > 2;
 
 
